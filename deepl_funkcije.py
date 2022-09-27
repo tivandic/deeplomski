@@ -209,25 +209,25 @@ def train_model(model: torch.nn.Module,
           f"test_acc: {test_acc:.4f} "
         )
         
-        # provjera za early stopping
-        if es_patience > 0:
-          if    test_acc > best_accuracy: 
-              torch.save(model.state_dict(), best_model)
-              print('---------------------------------------------------------------------------------------------')
-              print('Epoch ', (epoch + 1), '| Best model saved in ', best_model) 
-              best_accuracy = test_acc
-              es_counter = 1
-              best_epoch = epoch
+   
+        
+        if    test_acc > best_accuracy: 
+            torch.save(model.state_dict(), best_model)
+            print('---------------------------------------------------------------------------------------------')
+            print('Epoch ', (epoch + 1), '| Best model saved in ', best_model) 
+            best_accuracy = test_acc
+            es_counter = 1
+            best_epoch = epoch
 
-              print(classification_report(y_true=epoch_true, y_pred=epoch_pred, target_names=labels, zero_division=0))
+            print(classification_report(y_true=epoch_true, y_pred=epoch_pred, target_names=labels, zero_division=0))
 
-              roc_auc = roc_auc_score_mc(epoch_true, epoch_pred, average = 'macro')
-              print('{:>12}  {:>9}'.format("", "ROC_AUC (OvR)"))
+            roc_auc = roc_auc_score_mc(epoch_true, epoch_pred, average = 'macro')
+            print('{:>12}  {:>9}'.format("", "ROC_AUC (OvR)"))
 
-              for l , v in roc_auc.items(): 
-                  print ('{:>12}  {:>9}'.format(labels[l], round(v, 4)))
-          else:
-              es_counter = es_counter + 1      
+            for l , v in roc_auc.items(): 
+                print ('{:>12}  {:>9}'.format(labels[l], round(v, 4)))
+        else:
+            es_counter = es_counter + 1      
 
         results["train_loss"].append(train_loss)
         results["train_acc"].append(train_acc)
