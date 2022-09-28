@@ -4,13 +4,59 @@ import torchvision
 from torch import nn
 from torchvision import transforms
 import os
+import glob
 from tqdm.auto import tqdm
 from typing import Dict, List, Tuple
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, classification_report, roc_auc_score, classification_report
 import pandas as pd
 import numpy as np
+import random
+from PIL import Image 
+from skimage.io import imread
 
+# prikazuje 16 nasumičnih slika iz zadanog skupa
+def display_random_images(train_dir:str):
+  # train_dir = '/content/drive/MyDrive/data/Vegetable Images/train/'
+  images = []
+  for dir in os.listdir(train_dir):
+    for image in os.listdir(train_dir + '/' + dir):
+      images.append(os.path.join(train_dir, dir, image))
+
+  plt.figure(1, figsize=(15, 9))
+  plt.axis('off')
+  n = 0
+  for i in range(16):
+    n += 1
+    random_img = random.choice(images)
+    imgs = imread(random_img)
+    plt.subplot(4, 4, n)
+    plt.imshow(imgs)
+
+  plt.show()
+
+# prikazuje bar graph s brojem primjeraka u svakoj klasi
+def classes_bar_plot(train_dir):
+  classes = {}
+  num_clasess = 0
+  for directory_path in glob.glob(train_dir):
+    label = directory_path.split("/")[-1]
+    #print(label)
+    num_clasess = num_clasess + 1
+    num_images = 0
+    for img_path in glob.glob(os.path.join(directory_path, "*.jpg")):
+        #print(img_path)
+        num_images = num_images + 1
+    classes[label] = num_images
+    # print("Images in class " + label + ": " + str(num_images))    
+  #print(classes)
+  names = list(classes.keys())
+  values = list(classes.values())
+  plt.bar(range(len(classes)), values, tick_label=names)
+  plt.xticks(rotation='vertical')
+  plt.show()  
+  
+  
 # roc_auc multi class OvR
 def roc_auc_score_mc(true_class, pred_class, average):
   classes = set(true_class)
