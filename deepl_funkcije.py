@@ -17,7 +17,6 @@ from skimage.io import imread
 
 # prikazuje 16 nasumičnih slika iz zadanog skupa
 def display_random_images(train_dir:str):
-  # train_dir = '/content/drive/MyDrive/data/Vegetable Images/train/'
   images = []
   for dir in os.listdir(train_dir):
     for image in os.listdir(train_dir + '/' + dir):
