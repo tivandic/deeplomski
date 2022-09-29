@@ -35,7 +35,7 @@ def display_random_images(train_dir:str):
   plt.show()
 
 # prikazuje bar graph s brojem primjeraka u svakoj klasi
-def classes_bar_plot(train_dir):
+def classes_bar_plot(train_dir, extension):
   classes = {}
   num_clasess = 0
   for directory_path in glob.glob(train_dir):
@@ -43,7 +43,7 @@ def classes_bar_plot(train_dir):
     #print(label)
     num_clasess = num_clasess + 1
     num_images = 0
-    for img_path in glob.glob(os.path.join(directory_path, "*.jpg")):
+    for img_path in glob.glob(os.path.join(directory_path, extension)):
         #print(img_path)
         num_images = num_images + 1
     classes[label] = num_images
@@ -53,7 +53,7 @@ def classes_bar_plot(train_dir):
   values = list(classes.values())
   plt.bar(range(len(classes)), values, tick_label=names)
   plt.xticks(rotation='vertical')
-  plt.show()  
+  plt.show() 
   
   
 # roc_auc multi class OvR
