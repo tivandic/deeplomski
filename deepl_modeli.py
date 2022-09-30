@@ -52,7 +52,7 @@ def DAlexNet (train_dir, test_dir, train_dataloader, test_dataloader, model_path
                        best_model = model_path,
                        labels=class_names,
                        device = device)
-
+    return results, best_epoch_true, best_epoch_pred
 
 def DResNet50 (train_dir, test_dir, model_path):
     # učitavanje najboljih težinskih vrijednosti dobivenih treniranjem na ImageNet skupu
@@ -107,6 +107,8 @@ def DResNet50 (train_dir, test_dir, model_path):
                        best_model = model_path,
                        labels=class_names,
                        device = device)
+    
+    return results, best_epoch_true, best_epoch_pred
 
 def DVGG16 (train_dir, test_dir, model_path):    
     # učitavanje najboljih težinskih vrijednosti dobivenih treniranjem na ImageNet skupu
@@ -162,6 +164,8 @@ def DVGG16 (train_dir, test_dir, model_path):
                        best_model = model_path,
                        labels=class_names,
                        device = device)
+    
+    return results, best_epoch_true, best_epoch_pred
 
 def DViT_16 (train_dir, test_dir, model_path):    
     
@@ -210,3 +214,5 @@ def DViT_16 (train_dir, test_dir, model_path):
                        best_model = model_path,
                        labels=class_names,
                        device = device)
+    
+    return results, best_epoch_true, best_epoch_pred
