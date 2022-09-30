@@ -297,7 +297,7 @@ def train_model(model: torch.nn.Module,
 #============================
 
 # Alexnet
-def DAlexNet (train_dir, test_dir, train_dataloader, test_dataloader, model_path):
+def DAlexNet (train_dataloader, test_dataloader, model_path):
     # učitavanje najboljih težinskih vrijednosti dobivenih treniranjem na ImageNet skupu
     weights = torchvision.models.AlexNet_Weights.DEFAULT 
     
@@ -354,7 +354,7 @@ def DAlexNet (train_dir, test_dir, train_dataloader, test_dataloader, model_path
     return results, best_epoch_true, best_epoch_pred
 
 # ResNet50
-def DResNet50 (train_dir, test_dir, model_path):
+def DResNet50 (train_dataloader, test_dataloader, model_path):
     # učitavanje najboljih težinskih vrijednosti dobivenih treniranjem na ImageNet skupu
     weights = torchvision.models.ResNet50_Weights.DEFAULT 
     
@@ -412,7 +412,7 @@ def DResNet50 (train_dir, test_dir, model_path):
 
   
 # VGG16
-def DVGG16 (train_dir, test_dir, model_path):    
+def DVGG16 (train_dataloader, test_dataloader, model_path):    
     # učitavanje najboljih težinskih vrijednosti dobivenih treniranjem na ImageNet skupu
     weights = torchvision.models.VGG16_Weights.DEFAULT 
     
@@ -470,7 +470,7 @@ def DVGG16 (train_dir, test_dir, model_path):
     return results, best_epoch_true, best_epoch_pred
 
 # ViT_b_16
-def DViT_16 (train_dir, test_dir, model_path):    
+def DViT_16 (train_dataloader, test_dataloader, model_path):    
     
     # učitavanje najboljih težinskih vrijednosti dobivenih treniranjem na ImageNet skupu
     weights = torchvision.models.ViT_B_16_Weights.DEFAULT
