@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import torch
 import torchvision
 from torch import nn
-from torchvision import transforms
 import os
 import glob
 from tqdm.auto import tqdm
@@ -14,6 +13,8 @@ import numpy as np
 import random
 from PIL import Image 
 from skimage.io import imread
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
 
 # prikazuje 16 nasumičnih slika iz zadanog skupa
 def display_random_images(train_dir:str):
@@ -297,13 +298,34 @@ def train_model(model: torch.nn.Module,
 #============================
 
 # Alexnet
-def DAlexNet (train_dataloader, test_dataloader, model_path):
+def DAlexNet (train_dir, test_dir, model_path):
     # učitavanje najboljih težinskih vrijednosti dobivenih treniranjem na ImageNet skupu
     weights = torchvision.models.AlexNet_Weights.DEFAULT 
     
     # transformacija ulaznih podataka korištenjem istih parametara kao za ImageNet
     # budući da ćemo koristiti model prethodno treniran na tom skupu podataka
     preprocess = weights.transforms()
+    
+    # učitavanje podataka u dataloader
+    train_data = datasets.ImageFolder(train_dir, transform = preprocess)
+    test_data = datasets.ImageFolder(test_dir, transform = preprocess)
+
+    class_names = train_data.classes
+
+    train_dataloader = DataLoader(
+      train_data,
+      batch_size=32,
+      shuffle=True,
+      num_workers=2,
+      pin_memory=True,
+      )
+    test_dataloader = DataLoader(
+      test_data,
+      batch_size = 32,
+      shuffle = False,
+      num_workers = 2,
+      pin_memory = True,
+      )
       
     model = torchvision.models.alexnet(weights=weights).to(device)
    
@@ -354,14 +376,35 @@ def DAlexNet (train_dataloader, test_dataloader, model_path):
     return results, best_epoch_true, best_epoch_pred
 
 # ResNet50
-def DResNet50 (train_dataloader, test_dataloader, model_path):
+def DResNet50 (train_dir, test_dir, model_path):
     # učitavanje najboljih težinskih vrijednosti dobivenih treniranjem na ImageNet skupu
     weights = torchvision.models.ResNet50_Weights.DEFAULT 
     
     # transformacija ulaznih podataka korištenjem istih parametara kao za ImageNet
     # budući da ćemo koristiti model prethodno treniran na tom skupu podataka
     preprocess = weights.transforms()
-          
+    
+    # učitavanje podataka u dataloader
+    train_data = datasets.ImageFolder(train_dir, transform = preprocess)
+    test_data = datasets.ImageFolder(test_dir, transform = preprocess)
+
+    class_names = train_data.classes
+
+    train_dataloader = DataLoader(
+      train_data,
+      batch_size=32,
+      shuffle=True,
+      num_workers=2,
+      pin_memory=True,
+      )
+    test_dataloader = DataLoader(
+      test_data,
+      batch_size = 32,
+      shuffle = False,
+      num_workers = 2,
+      pin_memory = True,
+      )
+    
     model = torchvision.models.resnet50(weights=weights).to(device)
     
     # "zamrzavamo" sve trainable slojeve osim klasifikatora
@@ -412,13 +455,34 @@ def DResNet50 (train_dataloader, test_dataloader, model_path):
 
   
 # VGG16
-def DVGG16 (train_dataloader, test_dataloader, model_path):    
+def DVGG16 (train_dir, test_dir, model_path):    
     # učitavanje najboljih težinskih vrijednosti dobivenih treniranjem na ImageNet skupu
     weights = torchvision.models.VGG16_Weights.DEFAULT 
     
     # transformacija ulaznih podataka korištenjem istih parametara kao za ImageNet
     # budući da ćemo koristiti model prethodno treniran na tom skupu podataka
     preprocess = weights.transforms()
+    
+    # učitavanje podataka u dataloader
+    train_data = datasets.ImageFolder(train_dir, transform = preprocess)
+    test_data = datasets.ImageFolder(test_dir, transform = preprocess)
+
+    class_names = train_data.classes
+
+    train_dataloader = DataLoader(
+      train_data,
+      batch_size=32,
+      shuffle=True,
+      num_workers=2,
+      pin_memory=True,
+      )
+    test_dataloader = DataLoader(
+      test_data,
+      batch_size = 32,
+      shuffle = False,
+      num_workers = 2,
+      pin_memory = True,
+      )
 
     model = torchvision.models.vgg16(weights=weights).to(device)
 
@@ -470,7 +534,7 @@ def DVGG16 (train_dataloader, test_dataloader, model_path):
     return results, best_epoch_true, best_epoch_pred
 
 # ViT_b_16
-def DViT_16 (train_dataloader, test_dataloader, model_path):    
+def DViT_16 (train_dir, test_dir, model_path):    
     
     # učitavanje najboljih težinskih vrijednosti dobivenih treniranjem na ImageNet skupu
     weights = torchvision.models.ViT_B_16_Weights.DEFAULT
@@ -478,7 +542,28 @@ def DViT_16 (train_dataloader, test_dataloader, model_path):
     # transformacija ulaznih podataka korištenjem istih parametara kao za ImageNet
     # budući da ćemo koristiti model prethodno treniran na tom skupu podataka
     preprocess = weights.transforms()
-     
+    
+    # učitavanje podataka u dataloader
+    train_data = datasets.ImageFolder(train_dir, transform = preprocess)
+    test_data = datasets.ImageFolder(test_dir, transform = preprocess)
+
+    class_names = train_data.classes
+
+    train_dataloader = DataLoader(
+      train_data,
+      batch_size=32,
+      shuffle=True,
+      num_workers=2,
+      pin_memory=True,
+      )
+    test_dataloader = DataLoader(
+      test_data,
+      batch_size = 32,
+      shuffle = False,
+      num_workers = 2,
+      pin_memory = True,
+      )
+    
     model = torchvision.models.vit_b_16(weights=weights).to(device)
     
     # "zamrzavamo" sve trainable slojeve osim klasifikatora
