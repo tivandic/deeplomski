@@ -275,8 +275,8 @@ def train_model(model: torch.nn.Module,
             #roc_auc = roc_auc_score_mc(epoch_true, epoch_pred, average = 'macro')
             #print('{:>12}  {:>9}'.format("", "ROC_AUC (OvR)"))
 
-            for l , v in roc_auc.items(): 
-                print ('{:>12}  {:>9}'.format(labels[l], round(v, 4)))
+            #for l , v in roc_auc.items(): 
+             #   print ('{:>12}  {:>9}'.format(labels[l], round(v, 4)))
         else:
             es_counter = es_counter + 1      
 
