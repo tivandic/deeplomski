@@ -237,7 +237,7 @@ def train_model(model: torch.nn.Module,
     es_counter = 1; # brojač epoha bez porasta acc 
     best_epoch = 0 # epoha s najboljim acc
 
-    epoch_probs, epochs_true, epochs_pred = [], [] # liste true/pred iz svake epohe
+    epoch_probs, epochs_true, epochs_pred = [], [], [] # liste true/pred/prob iz svake epohe
     for epoch in tqdm(range(epochs)):
         train_loss, train_acc = train_epoch(model=model,
                                            dataloader=train_dataloader,
