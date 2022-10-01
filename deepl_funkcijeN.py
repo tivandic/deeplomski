@@ -212,7 +212,7 @@ def test_epoch(model: torch.nn.Module,
     test_loss = test_loss / len(dataloader)
     test_acc = test_acc / len(dataloader)
     
-    return test_loss, test_acc, epoch_true_labels, epoch_pred_labels
+    return test_loss, test_acc, epoch_true_labels, epoch_pred_labels, epoch_probs
 
 # treniranje modela; nova funkcija
 def train_model(model: torch.nn.Module, 
@@ -237,7 +237,7 @@ def train_model(model: torch.nn.Module,
     es_counter = 1; # brojač epoha bez porasta acc 
     best_epoch = 0 # epoha s najboljim acc
 
-    epochs_true, epochs_pred = [], [] # liste true/pred iz svake epohe
+    epoch_probs, epochs_true, epochs_pred = [], [] # liste true/pred iz svake epohe
     for epoch in tqdm(range(epochs)):
         train_loss, train_acc = train_epoch(model=model,
                                            dataloader=train_dataloader,
@@ -245,7 +245,7 @@ def train_model(model: torch.nn.Module,
                                            optimizer=optimizer,
                                            device=device)
         
-        test_loss, test_acc, epoch_true, epoch_pred = test_epoch(model=model,
+        test_loss, test_acc, epoch_true, epoch_pred, epoch_prob = test_epoch(model=model,
                                         dataloader=test_dataloader,
                                         loss_fn=loss_fn,
                                         device=device)
@@ -271,9 +271,9 @@ def train_model(model: torch.nn.Module,
             best_epoch = epoch
 
             print(classification_report(y_true=epoch_true, y_pred=epoch_pred, target_names=labels, zero_division=0))
-
-            roc_auc = roc_auc_score_mc(epoch_true, epoch_pred, average = 'macro')
-            print('{:>12}  {:>9}'.format("", "ROC_AUC (OvR)"))
+            
+            #roc_auc = roc_auc_score_mc(epoch_true, epoch_pred, average = 'macro')
+            #print('{:>12}  {:>9}'.format("", "ROC_AUC (OvR)"))
 
             for l , v in roc_auc.items(): 
                 print ('{:>12}  {:>9}'.format(labels[l], round(v, 4)))
@@ -287,7 +287,8 @@ def train_model(model: torch.nn.Module,
         
         epochs_true.append(epoch_true)
         epochs_pred.append(epoch_pred)
-
+        epoch_probs.append(epoch_prob)
+        
         # provjera za early stopping
         if es_patience > 0:
           if es_counter > es_patience:
@@ -296,7 +297,7 @@ def train_model(model: torch.nn.Module,
             print ('Best test accuracy: ', best_accuracy)
             break
         
-    return results, best_epoch, epochs_true, epochs_pred
+    return results, best_epoch, epochs_true, epochs_pred, epochs_prob
 
 # ===========================
 # funkcije za deep modele
