@@ -387,7 +387,7 @@ def DAlexNet (train_dir, test_dir, model_path):
                        best_model = model_path,
                        labels=class_names,
                        device = device)
-    return results, best_epoch, best_epoch_true, best_epoch_pred, epoch_aucs
+    return results, best_epoch, epochs_true, epochs_pred, epoch_aucs
 
 # ResNet50
 def DResNet50 (train_dir, test_dir, model_path):
@@ -469,7 +469,7 @@ def DResNet50 (train_dir, test_dir, model_path):
                        labels=class_names,
                        device = device)
     
-    return results, best_epoch, best_epoch_true, best_epoch_pred, epoch_aucs
+    return results, best_epoch, epochs_true, epochs_pred, epoch_aucs
 
   
 # VGG16
@@ -553,7 +553,7 @@ def DVGG16 (train_dir, test_dir, model_path):
                        labels=class_names,
                        device = device)
     
-    return results, best_epoch, best_epoch_true, best_epoch_pred, epoch_aucs
+    return results, best_epoch, epochs_true, epochs_pred, epoch_aucs
 
 # ViT_b_16
 def DViT_16 (train_dir, test_dir, model_path):    
@@ -628,4 +628,4 @@ def DViT_16 (train_dir, test_dir, model_path):
                        labels=class_names,
                        device = device)
     
-    return results, best_epoch, best_epoch_true, best_epoch_pred, epoch_aucs
+    return results, best_epoch, epochs_true, epochs_pred, epoch_aucs
