@@ -15,6 +15,7 @@ from PIL import Image
 from skimage.io import imread
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
+from sklearn import metrics
 
 # prikazuje 16 nasumičnih slika iz zadanog skupa
 def display_random_images(train_dir:str):
