@@ -458,7 +458,7 @@ def DResNet50 (train_dir, test_dir, model_path):
     best_epoch = 0 
 
     # fine-tuning modela na našem skupu podataka
-    results, best_epoch, epochs_true, epochs_pred = train_model(model = model,
+    results, best_epoch, epochs_true, epochs_pred, epoch_aucs = train_model(model = model,
                        train_dataloader = train_dataloader,
                        test_dataloader = test_dataloader,
                        optimizer = optimizer,
