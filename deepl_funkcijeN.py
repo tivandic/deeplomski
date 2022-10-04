@@ -133,7 +133,7 @@ def con_matrix(best_true, best_pred, class_names, title):
                      columns = class_names)
 
   plt.figure(figsize=(12,10))
-  sns.heatmap(conf_matrix_df, annot=True, cmap=sns.color_palette("viridis", as_cmap=True))
+  sns.heatmap(conf_matrix_df, annot=True, fmt="d", cmap=sns.color_palette("viridis", as_cmap=True))
   plt.title(title)
   plt.ylabel('True values')
   plt.xlabel('Predicted Values')
