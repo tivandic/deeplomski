@@ -608,7 +608,7 @@ def DViT_16 (train_dir, test_dir, model_path):
     
     # standardni optimizer i loss function za ViT16
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), betas=(0.9, 0.999), weight_decay=0.1, lr=0.001)
+    optimizer = torch.optim.Adam(model.parameters(), betas=(0.9, 0.999), weight_decay=0.01, lr=0.001)
     
     torch.manual_seed(42)
     torch.cuda.manual_seed(42)
