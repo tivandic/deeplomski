@@ -383,7 +383,7 @@ def DAlexNet (train_dir, test_dir, model_path):
                        optimizer = optimizer,
                        loss_fn = loss_fn,
                        epochs = 30,
-                       es_patience = 10, # 0 = no early stopping
+                       es_patience = 3, # 0 = no early stopping
                        best_model = model_path,
                        labels=class_names,
                        device = device)
@@ -464,7 +464,7 @@ def DResNet50 (train_dir, test_dir, model_path):
                        optimizer = optimizer,
                        loss_fn = loss_fn,
                        epochs = 30,
-                       es_patience = 10, # postaviti 0 za bez early stoppinga
+                       es_patience = 3, # postaviti 0 za bez early stoppinga
                        best_model = model_path,
                        labels=class_names,
                        device = device)
@@ -548,7 +548,7 @@ def DVGG16 (train_dir, test_dir, model_path):
                        optimizer = optimizer,
                        loss_fn = loss_fn,
                        epochs = 30,
-                       es_patience = 10, # postaviti 0 za bez early stoppinga
+                       es_patience = 3, # postaviti 0 za bez early stoppinga
                        best_model = model_path,
                        labels=class_names,
                        device = device)
@@ -623,7 +623,7 @@ def DViT_16 (train_dir, test_dir, model_path):
                        optimizer = optimizer,
                        loss_fn = loss_fn,
                        epochs = 30,
-                       es_patience = 10, # postaviti 0 za bez early stoppinga
+                       es_patience = 3, # postaviti 0 za bez early stoppinga
                        best_model = model_path,
                        labels=class_names,
                        device = device)
