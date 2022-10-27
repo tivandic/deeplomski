@@ -16,7 +16,59 @@ from skimage.io import imread
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from sklearn import metrics
+from sklearn.utils import shuffle
+from skimage.filters import sobel, prewitt
+import cv2
 
+# učitava train/test podijeljene podatke za RF_SVM 
+def LoadData(train_dir, test_dir, dir_separator, file_extension, image_size):
+ 
+    train_images = []
+    train_labels = [] 
+
+    print('Učitavanje trening skupa...')
+    for directory_path in tqdm(glob.glob(train_dir + "*")):
+        label = directory_path.split(dir_separator)[-1]
+        print(label)
+        for img_path in tqdm(glob.glob(os.path.join(directory_path, file_extension))):
+            img = cv2.imread(img_path, cv2.IMREAD_COLOR) 
+            img = cv2.resize(img, (image_size, image_size))
+            #img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR) 
+            train_images.append(img)
+            train_labels.append(label)
+        
+    train_images = np.array(train_images)
+    train_labels = np.array(train_labels)
+
+    train_images, train_labels = shuffle(train_images, train_labels)
+
+    test_images = []
+    test_labels = [] 
+
+    print('Učitavanje test skupa...')
+    for directory_path in tqdm(glob.glob(test_dir + "*")):
+        label = directory_path.split(dir_separator)[-1] 
+        print(label)
+        for img_path in tqdm(glob.glob(os.path.join(directory_path, file_extension))):
+            img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+            img = cv2.resize(img, (image_size, image_size))
+            #img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR) #Optional
+            test_images.append(img)
+            test_labels.append(label)
+        
+    test_images = np.array(test_images)
+    test_labels = np.array(test_labels)
+    
+    # kodiranje oznaka klase u brojke
+    label_enc = preprocessing.LabelEncoder()
+    label_enc.fit(test_labels)
+    test_labels_encoded = label_enc.transform(test_labels)
+    label_enc.fit(train_labels)
+    train_labels_encoded = label_enc.transform(train_labels)
+    
+    return train_images, train_labels, test_images, test_labels
+ 
+  
 # prikazuje 16 nasumičnih slika iz zadanog skupa
 def display_random_images(train_dir:str):
   images = []
