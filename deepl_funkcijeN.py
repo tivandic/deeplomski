@@ -33,6 +33,12 @@ def LoadData(train_dir, test_dir, dir_separator, file_extension, image_size):
         for img_path in tqdm(glob.glob(os.path.join(directory_path, file_extension))):
             img = cv2.imread(img_path, cv2.IMREAD_COLOR) 
             img = cv2.resize(img, (image_size, image_size))
+            
+            # normalizacija 0-255
+            norm = np.zeros((image_size,image_size))
+            img = cv2.normalize(img,  norm, 0, 255, cv2.NORM_MINMAX)
+            norm = None
+            
             #img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR) 
             train_images.append(img)
             train_labels.append(label)
@@ -52,6 +58,12 @@ def LoadData(train_dir, test_dir, dir_separator, file_extension, image_size):
         for img_path in tqdm(glob.glob(os.path.join(directory_path, file_extension))):
             img = cv2.imread(img_path, cv2.IMREAD_COLOR)
             img = cv2.resize(img, (image_size, image_size))
+            
+            # normalizacija 0-255
+            norm = np.zeros((image_size,image_size))
+            img = cv2.normalize(img,  norm, 0, 255, cv2.NORM_MINMAX)
+            norm = None
+            
             #img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR) #Optional
             test_images.append(img)
             test_labels.append(label)
@@ -65,6 +77,7 @@ def LoadData(train_dir, test_dir, dir_separator, file_extension, image_size):
     test_labels_encoded = label_enc.transform(test_labels)
     label_enc.fit(train_labels)
     train_labels_encoded = label_enc.transform(train_labels)
+    
     
     return train_images, train_labels, test_images, test_labels
  
