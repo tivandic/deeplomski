@@ -19,6 +19,11 @@ from sklearn import metrics
 from sklearn.utils import shuffle
 from skimage.filters import sobel, prewitt
 import cv2
+from skimage.filters import sobel, prewitt
+from sklearn.utils import shuffle
+from sklearn import preprocessing
+from skimage.feature import hog
+from skimage.feature import local_binary_pattern
 
 # učitava podatke za RF_SVM podijeljene na train/test
 def LoadData(train_dir, test_dir, dir_separator, file_extension, image_size):
