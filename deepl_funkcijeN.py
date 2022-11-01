@@ -20,7 +20,7 @@ from sklearn.utils import shuffle
 from skimage.filters import sobel, prewitt
 import cv2
 
-# učitava train/test podijeljene podatke za RF_SVM 
+# učitava podatke za RF_SVM podijeljene na train/test
 def LoadData(train_dir, test_dir, dir_separator, file_extension, image_size):
  
     train_images = []
@@ -34,12 +34,11 @@ def LoadData(train_dir, test_dir, dir_separator, file_extension, image_size):
             img = cv2.imread(img_path, cv2.IMREAD_COLOR) 
             img = cv2.resize(img, (image_size, image_size))
             
-            # normalizacija 0-255
+            # normalizacija na raspon od 0 do 255
             norm = np.zeros((image_size,image_size))
             img = cv2.normalize(img,  norm, 0, 255, cv2.NORM_MINMAX)
             norm = None
-            
-            #img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR) 
+
             train_images.append(img)
             train_labels.append(label)
         
@@ -58,29 +57,117 @@ def LoadData(train_dir, test_dir, dir_separator, file_extension, image_size):
         for img_path in tqdm(glob.glob(os.path.join(directory_path, file_extension))):
             img = cv2.imread(img_path, cv2.IMREAD_COLOR)
             img = cv2.resize(img, (image_size, image_size))
-            
-            # normalizacija 0-255
+
+            # normalizacija na raspon od 0 do 255
             norm = np.zeros((image_size,image_size))
             img = cv2.normalize(img,  norm, 0, 255, cv2.NORM_MINMAX)
             norm = None
             
-            #img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR) #Optional
             test_images.append(img)
             test_labels.append(label)
         
     test_images = np.array(test_images)
     test_labels = np.array(test_labels)
-    
-    # kodiranje oznaka klase u brojke
-    label_enc = preprocessing.LabelEncoder()
-    label_enc.fit(test_labels)
-    test_labels_encoded = label_enc.transform(test_labels)
-    label_enc.fit(train_labels)
-    train_labels_encoded = label_enc.transform(train_labels)
-    
-    
+        
     return train_images, train_labels, test_images, test_labels
- 
+
+# učitava podatke i dijeli ih na train/test    
+def LoadSplitData(data_dir, dir_separator, file_extension, image_size):
+    
+    from sklearn.model_selection import train_test_split
+
+    images = []
+    labels = [] 
+
+    print('Učitavanje podataka...')
+    for directory_path in tqdm(glob.glob(data_dir + "*")):
+        label = directory_path.split(dir_separator)[-1]
+        print(label)
+        for img_path in tqdm(glob.glob(os.path.join(directory_path, file_extension))):
+            img = cv2.imread(img_path, cv2.IMREAD_COLOR) 
+            img = cv2.resize(img, (image_size, image_size))
+            
+            # normalizacija na raspon od 0 do 255
+            norm = np.zeros((image_size,image_size))
+            img = cv2.normalize(img,  norm, 0, 255, cv2.NORM_MINMAX)
+            norm = None
+    
+            images.append(img)
+            labels.append(label)
+        
+    images = np.array(images)
+    labels = np.array(labels)
+
+    #images, labels = shuffle(images, labels)
+
+    # dijeljenje na testni i trening skup
+    (train_images, test_images, train_labels, test_labels) = train_test_split(images, labels, test_size = .2, random_state = 42)
+        
+    return train_images, train_labels, test_images, test_labels
+
+# ekstrakcija značajki sobel/prewitt
+def feature_extractor(dataset):
+    train_images = dataset
+    image_dataset = pd.DataFrame()
+    i = 0
+    for image in tqdm(range(train_images.shape[0])):  #iterate through each file 
+        
+        df = pd.DataFrame()          
+        input_img = train_images[image, :,:,:]
+        
+        # gaussian blur
+        img = input_img
+        img = cv2.GaussianBlur(img, (3,3), 0)
+         
+        # sobel
+        edge_sobel = sobel(img)
+        edge_sobel_re = edge_sobel.reshape(-1)
+        df['Sobel'] = edge_sobel_re
+
+        # prewitt
+        edge_prewitt = prewitt(img)
+        edge_prewitt_re = edge_prewitt.reshape(-1)
+        df['Prewitt'] = edge_prewitt_re
+
+        image_dataset = image_dataset.append(df)
+        
+    return image_dataset
+
+# ekstrakcija značajki HOG/LBP
+def f_extractor(dataset):
+    
+    from skimage.feature import hog
+    from skimage import feature
+    #import mahotas as mt
+    
+    train_images = dataset
+    image_dataset = pd.DataFrame()
+    i = 0
+    for image in tqdm(range(train_images.shape[0])):  #iterate through each file 
+        
+        df = pd.DataFrame()          
+        img = train_images[image, :,:,:]
+        
+        img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+        
+        radius = 3
+        # number of neighbors to consider for LBP
+        n_points = 8 * radius 
+        # sampling type for LBP
+        METHOD = 'uniform'     
+        lbp = local_binary_pattern(img, n_points, radius, METHOD)
+        # Converting into 1-D array
+        f_lbp=lbp.flatten()
+        
+        f_hog, hog_image = hog(img, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), visualize=True, multichannel=False)
+        
+        feat = np.hstack([f_lbp, f_hog])
+        
+        df['features'] = feat
+        
+        image_dataset = image_dataset.append(df)
+        
+    return image_dataset
   
 # prikazuje 16 nasumičnih slika iz zadanog skupa
 def display_random_images(train_dir:str):
