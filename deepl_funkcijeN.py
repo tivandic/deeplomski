@@ -701,7 +701,7 @@ def DVGG16 (train_dir, test_dir, model_path):
     
     # standardni optimizer i loss function za VGG16
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    optimizer = torch.optim.Adam(model.parameters(), weight_decay=0.0001, lr=0.001)
     
     torch.manual_seed(42)
     torch.cuda.manual_seed(42)
