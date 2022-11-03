@@ -25,6 +25,8 @@ from sklearn import preprocessing
 from skimage.feature import hog
 from skimage.feature import local_binary_pattern
 
+from torch.optim.lr_scheduler import ExponentialLR
+
 # učitava podatke za RF_SVM podijeljene na train/test
 def LoadData(train_dir, test_dir, dir_separator, file_extension, image_size):
  
@@ -302,10 +304,14 @@ def train_epoch(model: torch.nn.Module,
                dataloader: torch.utils.data.DataLoader, 
                loss_fn: torch.nn.Module, 
                optimizer: torch.optim.Optimizer,
+               scheduler: torch.optim.lr_scheduler, # 03-11-22 
                device: torch.device) -> Tuple[float, float]:
 
     train_loss, train_acc = 0, 0
-    model.train()
+   
+
+   
+   model.train()
     
     for batch, (X, y) in enumerate(dataloader):
 
@@ -318,10 +324,11 @@ def train_epoch(model: torch.nn.Module,
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-
+    
         y_pred_class = torch.argmax(torch.softmax(y_pred, dim=1), dim=1)
         train_acc += (y_pred_class == y).sum().item()/len(y_pred)
-
+    scheduler.step()
+    
     train_loss = train_loss / len(dataloader)
     train_acc = train_acc / len(dataloader)
     return train_loss, train_acc
@@ -393,6 +400,9 @@ def train_model(model: torch.nn.Module,
                "test_acc": [],
     } # rezultati
 
+    # dodavano 3-11-22
+    scheduler = ExponentialLR(optimizer, gamma=0.9)
+    
     roc_auc = {}
     best_accuracy = 0; # najbolji acc 
     es_counter = 1; # brojač epoha bez porasta acc 
@@ -404,6 +414,7 @@ def train_model(model: torch.nn.Module,
                                            dataloader=train_dataloader,
                                            loss_fn=loss_fn,
                                            optimizer=optimizer,
+                                           scheduler=scheduler, 
                                            device=device)
         
         test_loss, test_acc, epoch_true, epoch_pred, epoch_auc = test_epoch(model=model,
