@@ -258,7 +258,7 @@ def roc_auc_curve_mc(true_class, pred_class, classes):
     plt.show()
 
 # loss/accuracy per epoch krivulje
-def plot_results(results):
+def plot_results(results, title):
 
     train_loss = results["train_loss"]
     test_loss = results["test_loss"]
@@ -271,14 +271,14 @@ def plot_results(results):
     plt.figure(figsize=(15, 7))
 
     plt.subplot(1, 2, 1)
-    plt.title("Loss per epoch")
+    plt.title(title)
     plt.xlabel("Epoch")
     plt.plot(epochs, train_loss, label="Train loss")
     plt.plot(epochs, test_loss, label="Test loss")
     plt.legend()
 
     plt.subplot(1, 2, 2)
-    plt.title("Accuracy per epoch")
+    plt.title(title)
     plt.xlabel("Epoch")
     plt.plot(epochs, train_accuracy, label="Train accuracy")
     plt.plot(epochs, test_accuracy, label="Test accuracy")
