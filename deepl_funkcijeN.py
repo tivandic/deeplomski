@@ -401,7 +401,7 @@ def train_model(model: torch.nn.Module,
     } # rezultati
 
     # dodavano 3-11-22
-    scheduler = ExponentialLR(optimizer, gamma=0.9)
+    scheduler = ExponentialLR(optimizer, gamma=0.9, verbose=True)
     
     roc_auc = {}
     best_accuracy = 0; # najbolji acc 
