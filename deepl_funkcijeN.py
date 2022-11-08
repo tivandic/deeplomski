@@ -208,7 +208,7 @@ def classes_bar_plot(train_dir, extension):
         #print(img_path)
         num_images = num_images + 1
     classes[label] = num_images
-    print(label + ": " + str(num_images))    
+    #print(label + ": " + str(num_images))    
   #print(classes)
   names = list(classes.keys())
   values = list(classes.values())
